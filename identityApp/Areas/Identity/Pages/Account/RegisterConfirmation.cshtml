@@ -1,0 +1,25 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity.UI.V5.Pages.Account.Internal;
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Подтверждение регистрации";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (@Model.DisplayConfirmAccountLink)
+    {
+        <p>
+            В настоящее время в этом приложении не зарегистрирован реальный отправитель электронной почты, смотрите
+            <a href="https://aka.ms/aspaccountconf">эти документы</a> как настроить реального отправителя электронной почты.
+            Обычно это будет отправлено по электронной почте: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Нажмите здесь, чтобы подтвердить свою учетную запись</a>
+        </p>
+    }
+    else
+    {
+        <p>
+            Пожалуйста, проверьте свою электронную почту, чтобы подтвердить свою учетную запись.
+        </p>
+    }
+}
+

@@ -1,0 +1,95 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Создание нового пользователя.</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.Email"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="Input.Password"></label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="Input.ConfirmPassword"></label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.FirstName" class="form-control" aria-required="true" />
+                <label asp-for="Input.FirstName"></label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.LastName" class="form-control" aria-required="true" />
+                <label asp-for="Input.LastName"></label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="mrgn center text-color-gray text-size_12">Дата рождения</div>
+            <div class="mrgn center">
+                <select asp-for="Input.Date" class="form-control date_control" ID="ddlDay">
+                    <option value="">День</option>
+                </select>
+                <span asp-validation-for="Input.Date" class="text-danger"></span>
+
+                <select asp-for="Input.Month" class="form-control date_control" asp-items="Html.GetEnumSelectList<AwesomeNetwork.ViewModels.Months>()" onchange="PopulateDays()" ID="ddlMonth">
+                    <option value="">Месяц</option>
+                </select>
+
+                <span asp-validation-for="Input.Month" class="text-danger"></span>
+
+                <select asp-for="Input.Year" class="form-control date_control" ID="ddlYear"
+                        asp-items="Enumerable.Range(DateTime.Now.AddYears(-100).Year, DateTime.Now.AddYears(-14).Year - DateTime.Now.AddYears(-100).Year).Reverse().Select(x=> new SelectListItem(x.ToString(), x.ToString()))"
+                        onchange="PopulateDays()">
+                    <option value="">Год</option>
+                </select>
+                <span asp-validation-for="Input.Year" class="text-danger"></span>
+            </div>            
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Регистрация</button>
+        </form>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+
+    <script type="text/javascript">
+        function PopulateDays() {
+            var ddlMonth = document.getElementById("ddlMonth");
+            var ddlYear = document.getElementById("ddlYear");
+            var ddlDay = document.getElementById("ddlDay");
+            var y = ddlYear.options[ddlYear.selectedIndex].value;
+            var m = ddlMonth.options[ddlMonth.selectedIndex].value != 0;
+            if (ddlMonth.options[ddlMonth.selectedIndex].value != 0 && ddlYear.options[ddlYear.selectedIndex].value != 0) {
+                var dayCount = 32 - new Date(ddlYear.options[ddlYear.selectedIndex].value, ddlMonth.options[ddlMonth.selectedIndex].value - 1, 32).getDate();
+                ddlDay.options.length = 0;
+                for (var i = 1; i <= dayCount; i++) {
+                    AddOption(ddlDay, i, i);
+                }
+            }
+        }
+        function AddOption(ddl, text, value) {
+            var opt = document.createElement("OPTION");
+            opt.text = text;
+            opt.value = value;
+            ddl.options.add(opt);
+        }
+    </script>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
