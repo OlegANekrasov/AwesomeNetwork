@@ -3,28 +3,31 @@ using AwesomeNetwork.Data;
 using AwesomeNetwork.Data.Repository;
 using AwesomeNetwork.Data.UoW;
 using AwesomeNetwork.Extentions;
+using AwesomeNetwork.Hubs;
 using AwesomeNetwork.Models.Users;
 using AwesomeNetwork.ViewModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace AwesomeNetwork.Controllers
 {
     public class UserManagementController : Controller
     {
         private IMapper _mapper;
-
         private readonly UserManager<IdentityUser> _userManager;
-
         private IUnitOfWork _unitOfWork;
+        private IHubContext<ChatHub> _hubContext;
 
-        public UserManagementController(UserManager<IdentityUser> userManager, IMapper mapper, IUnitOfWork unitOfWork)
+        public UserManagementController(UserManager<IdentityUser> userManager, IMapper mapper, IUnitOfWork unitOfWork, IHubContext<ChatHub> hubContext)
         {
             _userManager = userManager;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _hubContext = hubContext;
         }
 
 
@@ -230,6 +233,8 @@ namespace AwesomeNetwork.Controllers
                 Text = chat.NewMessage.Text,
             };
             repository.Create(item);
+
+            await _hubContext.Clients.All.SendAsync("NewMessage", ((User)result).FirstName.ToString() + ": " + chat.NewMessage.Text);
 
             var model = await GenerateChat(id);
             return View("Chat", model);

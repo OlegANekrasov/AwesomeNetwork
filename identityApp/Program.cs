@@ -2,6 +2,7 @@ using AutoMapper;
 using AwesomeNetwork;
 using AwesomeNetwork.Data.Repository;
 using AwesomeNetwork.Extentions;
+using AwesomeNetwork.Hubs;
 using AwesomeNetwork.Models.Users;
 using identityApp.Data;
 using Microsoft.AspNetCore.Identity;
@@ -35,6 +36,7 @@ builder.Services.AddSession();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -89,6 +91,7 @@ app.UseEndpoints(endpoints =>
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
     endpoints.MapRazorPages();
+    endpoints.MapHub<ChatHub>("/chatHub");
 });
 
 app.Run();
