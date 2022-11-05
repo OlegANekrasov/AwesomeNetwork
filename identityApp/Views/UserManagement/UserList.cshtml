@@ -11,7 +11,12 @@
         @foreach (var user in @Model.UserList)
         {
             <div>
+                <img src="@user.Image" class="ava" />
+            </div>
+            <div>
                 <label>@user.GetFullName()</label>
+                <br><label>@user.Status</label>
+                <br><label>@user.About</label>
                 @if (!@user.IsFriendWithCurrent)
                 {
                     <form asp-controller="UserManagement" asp-action="AddFriend" asp-route-id="@user.Id" method="post">
@@ -21,6 +26,7 @@
                     </form>
                 }
             </div>
+            <br>
         }
     }
     else
