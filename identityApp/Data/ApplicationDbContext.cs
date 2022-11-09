@@ -9,7 +9,7 @@ namespace identityApp.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            //Database.Migrate();
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
