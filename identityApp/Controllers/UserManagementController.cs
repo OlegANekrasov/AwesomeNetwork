@@ -135,8 +135,6 @@ namespace AwesomeNetwork.Controllers
                 list = list.Where(x => ((User)x).GetFullName().ToLower().Contains(search.ToLower())).ToList();
             }
 
-
-            //var list = _userManager.Users.AsEnumerable().Where(x => ((User)x).GetFullName().ToLower().Contains(search.ToLower())).ToList();
             var withfriend = await GetAllFriend();
 
             var data = new List<UserWithFriendExt>();
@@ -164,7 +162,7 @@ namespace AwesomeNetwork.Controllers
             var friend = await _userManager.FindByIdAsync(id);
 
             var repository = _unitOfWork.GetRepository<Friend>() as FriendsRepository;
-            repository.AddFriend((User)result, (User)friend);
+            await repository.AddFriend((User)result, (User)friend);
 
             return RedirectToAction("MyPage", "UserManagement");
         }
@@ -178,7 +176,7 @@ namespace AwesomeNetwork.Controllers
             var friend = await _userManager.FindByIdAsync(id);
 
             var repository = _unitOfWork.GetRepository<Friend>() as FriendsRepository;
-            repository.DeleteFriend((User)result, (User)friend);
+            await repository.DeleteFriend((User)result, (User)friend);
 
             return RedirectToAction("MyPage", "UserManagement");
 
@@ -239,7 +237,7 @@ namespace AwesomeNetwork.Controllers
                 Recipient = (User)friend,
                 Text = chat.NewMessage.Text,
             };
-            repository.Create(item);
+            await repository.Create(item);
 
             await _hubContext.Clients.All.SendAsync("NewMessage", ((User)result).FirstName.ToString() + ": " + chat.NewMessage.Text);
 
